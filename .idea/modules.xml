@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ProjectModuleManager">
+    <modules>
+      <module fileurl="file://$PROJECT_DIR$/../SimpleWebGL-Texture/.idea/SimpleWebGL-Texture.iml" filepath="$PROJECT_DIR$/../SimpleWebGL-Texture/.idea/SimpleWebGL-Texture.iml" />
+      <module fileurl="file://$PROJECT_DIR$/../cg/.idea/cg2021.iml" filepath="$PROJECT_DIR$/../cg/.idea/cg2021.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/cg_realworld.iml" filepath="$PROJECT_DIR$/.idea/cg_realworld.iml" />
+      <module fileurl="file://$PROJECT_DIR$/../geogl/.idea/geogl.iml" filepath="$PROJECT_DIR$/../geogl/.idea/geogl.iml" />
+    </modules>
+  </component>
+</project>
