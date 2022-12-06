@@ -5,7 +5,7 @@
     <link rel="stylesheet" href="style.css"/>
 </head>
 <body>
-<!--http://planetpixelemporium.com/planets.html-->
+<!-- http://planetpixelemporium.com/planets.html -->
 <script type="vertex" id="vs">
         #version 300 es
 
@@ -21,6 +21,15 @@
             vTextureCoord = textureCoordLoc;
             gl_Position = mvpMatrix * positionLoc ;
         }
+
+
+
+
+
+
+
+
+
 
 
 
@@ -42,6 +51,15 @@
 
 
 
+
+
+
+
+
+
+
+
+
 </script>
 
 
@@ -54,6 +72,8 @@
 <img id="bumpEarth" src="img/earthbump_squared.jpg" hidden alt="Earth Bumpmap"/>
 
 <script>
+
+
     window.onload = () => {
         let canvas = document.getElementById("webgl-canvas");
         canvas.width = window.innerWidth;
@@ -107,7 +127,7 @@
         gl.uniform1i(gl.getUniformLocation(program, "textureMap"), 0);
 
         // const sphereObj = sphere_way1(12);
-        const {positions, textureCoords} = sphere_way2(30, 30, 1.5, [1, 1, 1, 1]);
+        const {positions, textureCoords} = sphere_way2(50, 50, 1.5, [1, 1, 1, 1]);
 
         let positionBuffer = gl.createBuffer();
         gl.bindBuffer(gl.ARRAY_BUFFER, positionBuffer);
@@ -136,18 +156,59 @@
         //gl.clear(gl.COLOR_BUFFER_BIT);
 
         let l_modelViewProjectionMatrixLoc = gl.getUniformLocation(program, "mvpMatrix");
-        let i = 0;
+
+        let earthZ = 23.5;
+        let earthX = 0;
+        let earthY = (earthX + 1) % 360;
+
+        let autoRotate = true;
+        let rotateTimeout = null;
+
+        function resetRotateTimeout() {
+            autoRotate = false;
+            clearTimeout(rotateTimeout);
+            rotateTimeout = setTimeout(() => {
+                autoRotate = true;
+            }, 5000);
+        }
+
+        document.onkeydown = (e) => {
+            if (e.key === "ArrowUp") {
+                earthZ = (earthZ + 1) % 360;
+                resetRotateTimeout()
+            } else if (e.key === "ArrowDown") {
+                earthZ = (earthZ - 1) % 360;
+                resetRotateTimeout()
+            } else if (e.key === "ArrowLeft") {
+                earthY = (earthY - 1) % 360;
+                resetRotateTimeout()
+            } else if (e.key === "ArrowRight") {
+                earthY = (earthY + 1) % 360;
+                resetRotateTimeout()
+            }
+        }
+
+        let rotationMult = mat4(1, 0, 0, 0,
+            0, 1, 0, 0,
+            0, 0, 1, 0,
+            0, 0, 0, 1);
 
         let render = function () {
             gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
             eye = vec3(0, 1, 5);
             up = vec3(0, 1, 0);
             at = vec3(0, 0, 0);
-            i = (i + 1) % 360;
-            let earthZ = 23.5 * Math.sin(radians(i));
+            if (autoRotate) {
+                earthY = (earthY + 1) % 360;
+                earthZ = 23.5;
+                earthX = 0;
+            }
+
+            rotationMult = mult(mult(rotateY(earthY), rotateX(earthX)), rotateZ(earthZ));
+
             let translatem = translate(0, 0, 0);
             let detranslatem = translate(0, 0, 0);
-            let modelMatrix = mult(detranslatem, mult(mult(rotateY(i), rotateZ(earthZ)), translatem));
+            let modelMatrix = mult(detranslatem, mult(rotationMult, translatem));
             let viewMatrix = lookAt(eye, at, up);
             let modelViewMatrix = mult(viewMatrix, modelMatrix);
             let projectionMatrix = perspective(45, aspect, 3, 10);
