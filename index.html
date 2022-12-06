@@ -127,7 +127,7 @@
         gl.uniform1i(gl.getUniformLocation(program, "textureMap"), 0);
 
         // const sphereObj = sphere_way1(12);
-        const {positions, textureCoords} = sphere_way2(50, 50, 1.5, [1, 1, 1, 1]);
+        const {positions, textureCoords} = sphere_way2(120, 120, 1.5, [1, 1, 1, 1]);
 
         let positionBuffer = gl.createBuffer();
         gl.bindBuffer(gl.ARRAY_BUFFER, positionBuffer);
