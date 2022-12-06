@@ -56,21 +56,18 @@ function normalizeNumber(num, len) {
     return num;
 }
 
-function sphere_way2(rings, segments, radius, baseColor)
-{
-	let vertexPositionData = [];
+function sphere_way2(rings, segments, radius, baseColor) {
+    let vertexPositionData = [];
     let normalData = [];
-    let textureCoordData = [];
+    let textureVertexData = [];
     let colorData = [];
 
-    for (let ringsNumber = 0; ringsNumber <= rings; ringsNumber++)
-    {
+    for (let ringsNumber = 0; ringsNumber <= rings; ringsNumber++) {
         let theta = ringsNumber * Math.PI / rings;
         let sinTheta = Math.sin(theta);
         let cosTheta = Math.cos(theta);
 
-        for (let segmentsNumber = 0; segmentsNumber <= segments; segmentsNumber++)
-        {
+        for (let segmentsNumber = 0; segmentsNumber <= segments; segmentsNumber++) {
             let phi = segmentsNumber * 2 * Math.PI / segments;
             let sinPhi = Math.sin(phi);
             let cosPhi = Math.cos(phi);
@@ -81,16 +78,11 @@ function sphere_way2(rings, segments, radius, baseColor)
             let u = 1 - (segmentsNumber / segments);
             let v = 1 - (ringsNumber / rings);
 
-            normalData.push(x);
-            normalData.push(y);
-            normalData.push(z);
+            normalData.push(vec3(x, y, z));
 
-            textureCoordData.push(u);
-            textureCoordData.push(v);
+            textureVertexData.push(vec2(u, v));
 
-            vertexPositionData.push(radius * x);
-            vertexPositionData.push(radius * y);
-            vertexPositionData.push(radius * z);
+            vertexPositionData.push(vec4(radius * x, radius * y, radius * z, 1.0));
 
             colorData.push(baseColor[0]);
             colorData.push(baseColor[1]);
@@ -99,10 +91,8 @@ function sphere_way2(rings, segments, radius, baseColor)
         }
     }
     let indexData = [];
-    for (let ringsNumber = 0; ringsNumber < rings; ringsNumber++)
-    {
-        for (let segmentsNumber = 0; segmentsNumber < segments; segmentsNumber++)
-        {
+    for (let ringsNumber = 0; ringsNumber < rings; ringsNumber++) {
+        for (let segmentsNumber = 0; segmentsNumber < segments; segmentsNumber++) {
             let first = (ringsNumber * (segments + 1)) + segmentsNumber;
             let second = first + segments + 1;
 
@@ -116,12 +106,16 @@ function sphere_way2(rings, segments, radius, baseColor)
         }
     }
 
+    let positions = indexData.map((index) => vertexPositionData[index]);
+    let texture = indexData.map((index) => textureVertexData[index]);
+
     return {
-        vertices: vertexPositionData,
+        // vertices: vertexPositionData,
         normals: normalData,
-        texCoords: textureCoordData,
+        textureCoords: texture,
         colors: colorData,
-        indexes: indexData,
+        // indexes: indexData,
+        positions: positions,
     }
 }
 
