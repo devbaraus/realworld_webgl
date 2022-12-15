@@ -108,10 +108,11 @@ function sphere_way2(rings, segments, radius, baseColor) {
 
     let positions = indexData.map((index) => vertexPositionData[index]);
     let texture = indexData.map((index) => textureVertexData[index]);
+    let normals = indexData.map((index) => normalData[index]);
 
     return {
         // vertices: vertexPositionData,
-        normals: normalData,
+        normals: normals,
         textureCoords: texture,
         colors: colorData,
         // indexes: indexData,
