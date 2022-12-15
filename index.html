@@ -153,16 +153,15 @@
 
             gl.bindTexture(gl.TEXTURE_2D, textures[t].texture);
             gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, textures[t].image);
-            gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
-            gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
+            // gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
+            // gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
             gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR);
             gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR);
             gl.generateMipmap(gl.TEXTURE_2D);
             gl.uniform1i(gl.getUniformLocation(program, textures[t].name), t);
         }
 
-        // const sphereObj = sphere_way1(12);
-        const {positions, textureCoords, normals} = sphere_way2(1200, 1200, 2.5, [1, 1, 1, 1]);
+        const {positions, textureCoords, normals} = sphere_way2(isMobile ? 120 : 1000, isMobile ? 120 : 1000, 2.5, [1, 1, 1, 1]);
 
         let positionBuffer = gl.createBuffer();
         gl.bindBuffer(gl.ARRAY_BUFFER, positionBuffer);
