@@ -23,7 +23,7 @@
         void main() {
             vTextureCoord = textureCoordLoc;
             float height = texture(bumpEarth, vTextureCoord).r;
-            vec4 position = positionLoc + vec4(normalLoc * height, 0.0);
+            vec4 position = positionLoc + vec4(normalLoc * (height*0.2), 0.0);
             gl_Position = mvpMatrix * position ;
         }
 
