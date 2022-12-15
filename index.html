@@ -29,14 +29,6 @@
             vec4 position = positionLoc + vec4(normalLoc * height * 0.2, 0.0);
             gl_Position = mvpMatrix * position ;
         }
-
-
-
-
-
-
-
-
 </script>
 
 <script type="fragment" id="fs">
@@ -52,14 +44,6 @@
         void main() {
             fragColor = texture(texEarth, vTextureCoord);
         }
-
-
-
-
-
-
-
-
 </script>
 
 <canvas id="webgl-canvas"></canvas>
@@ -78,16 +62,75 @@
 </div>
 
 <script type="text/javascript" src="js/Common/MV.js"></script>
-<script type="text/javascript" src="js/main.js"></script>
 
 <img id="texEarth" src="img/earthmap_squared.jpg" hidden alt="Earth Colormap"/>
 <img id="bumpEarth" src="img/earthbump_squared.jpg" hidden alt="Earth Bumpmap"/>
 
 <script>
-    const queryString = window.location.search;
-    const urlParams = new URLSearchParams(queryString);
+    function SphereObject(rings, segments, radius, baseColor) {
+        let vertexPositionData = [];
+        let normalData = [];
+        let textureVertexData = [];
+        let colorData = [];
 
-    const isMobile = navigator.userAgentData.mobile; //resolves true/false
+        for (let ringsNumber = 0; ringsNumber <= rings; ringsNumber++) {
+            let theta = ringsNumber * Math.PI / rings;
+            let sinTheta = Math.sin(theta);
+            let cosTheta = Math.cos(theta);
+
+            for (let segmentsNumber = 0; segmentsNumber <= segments; segmentsNumber++) {
+                let phi = segmentsNumber * 2 * Math.PI / segments;
+                let sinPhi = Math.sin(phi);
+                let cosPhi = Math.cos(phi);
+
+                let x = cosPhi * sinTheta;
+                let y = cosTheta;
+                let z = sinPhi * sinTheta;
+                let u = 1 - (segmentsNumber / segments);
+                let v = 1 - (ringsNumber / rings);
+
+                normalData.push(vec3(x, y, z));
+
+                textureVertexData.push(vec2(u, v));
+
+                vertexPositionData.push(vec4(radius * x, radius * y, radius * z, 1.0));
+
+                colorData.push(baseColor[0]);
+                colorData.push(baseColor[1]);
+                colorData.push(baseColor[2]);
+                colorData.push(baseColor[3]);
+            }
+        }
+        let indexData = [];
+        for (let ringsNumber = 0; ringsNumber < rings; ringsNumber++) {
+            for (let segmentsNumber = 0; segmentsNumber < segments; segmentsNumber++) {
+                let first = (ringsNumber * (segments + 1)) + segmentsNumber;
+                let second = first + segments + 1;
+
+                indexData.push(first);
+                indexData.push(second);
+                indexData.push(first + 1);
+
+                indexData.push(second);
+                indexData.push(second + 1);
+                indexData.push(first + 1);
+            }
+        }
+
+        let positions = indexData.map((index) => vertexPositionData[index]);
+        let texture = indexData.map((index) => textureVertexData[index]);
+        let normals = indexData.map((index) => normalData[index]);
+
+        return {
+            // vertices: vertexPositionData,
+            normals: normals,
+            textureCoords: texture,
+            colors: colorData,
+            // indexes: indexData,
+            positions: positions,
+        }
+    }
+
 
     window.onload = () => {
         let canvas = document.getElementById("webgl-canvas");
@@ -161,7 +204,7 @@
             gl.uniform1i(gl.getUniformLocation(program, textures[t].name), t);
         }
 
-        const {positions, textureCoords, normals} = sphere_way2(1200, 1200, 2.5, [1, 1, 1, 1]);
+        const {positions, textureCoords, normals} = SphereObject(1200, 1200, 2.5, [1, 1, 1, 1]);
 
         let positionBuffer = gl.createBuffer();
         gl.bindBuffer(gl.ARRAY_BUFFER, positionBuffer);
